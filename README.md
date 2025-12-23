@@ -1,6 +1,19 @@
 # Lotos SPA - Spa Management System
 
-Complete backend system for spa booking and management built with Fastify, Prisma, and TypeScript.
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
+
+Complete spa booking and management system with backend API, admin dashboard, and client booking interface. Built with modern TypeScript stack for performance and maintainability.
+
+## Project Structure
+
+This repository contains three main components:
+
+- **`backend/`** - RESTful API server (Fastify + Prisma + TypeScript)
+- **`frontend/`** - Admin dashboard (React + TypeScript + Tailwind CSS)
+- **`lotos-spa-client/`** - Client booking interface (React + TypeScript)
+- **`gemini uiux/`** - Alternative UI/UX implementation
 
 ## Features
 
@@ -32,26 +45,46 @@ Complete backend system for spa booking and management built with Fastify, Prism
 ## Prerequisites
 
 - Node.js 18.0.0 or higher
-- PostgreSQL 14 or higher
+- PostgreSQL 14 or higher (or SQLite for development)
 - Redis 6.0 or higher (for job queues)
 - npm or yarn
 
-## Installation
+## Quick Start
 
-### 1. Clone the repository
+### Using the start script (Windows)
 
 ```bash
-git clone <repository-url>
-cd lotos-system/backend
+# Run all services at once
+start_all.bat
 ```
 
-### 2. Install dependencies
+This will start:
+- Backend API on http://localhost:3000
+- Frontend admin dashboard on http://localhost:5173
+- Client booking interface on http://localhost:5174
+
+### Manual setup
+
+See detailed installation instructions below for each component.
+
+## Installation
+
+### Backend Setup
+
+#### 1. Clone the repository
+
+```bash
+git clone https://github.com/ubbag/LotosOS.git
+cd LotosOS/backend
+```
+
+#### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Environment Setup
+#### 3. Environment Setup
 
 Create a `.env` file in the backend directory:
 
@@ -89,7 +122,7 @@ PAYMENT_WEBHOOK_SECRET="your-webhook-secret"
 APP_URL="http://localhost:3000"
 ```
 
-### 4. Setup Database
+#### 4. Setup Database
 
 ```bash
 # Run migrations
@@ -99,26 +132,110 @@ npm run prisma:migrate
 npm run seed
 ```
 
-## Development
+### Frontend Setup (Admin Dashboard)
 
-### Start development server
+#### 1. Navigate to frontend directory
+
+```bash
+cd ../frontend
+```
+
+#### 2. Install dependencies
+
+```bash
+npm install
+```
+
+#### 3. Environment Setup
+
+Create a `.env` file in the frontend directory:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+#### 4. Start development server
 
 ```bash
 npm run dev
 ```
 
-The server will start on `http://localhost:3000`
+The admin dashboard will be available at `http://localhost:5173`
 
-### Build for production
+### Client Interface Setup
+
+#### 1. Navigate to client directory
 
 ```bash
-npm run build
+cd ../lotos-spa-client
 ```
 
-### Start production server
+#### 2. Install dependencies
 
 ```bash
+npm install
+```
+
+#### 3. Environment Setup
+
+Create a `.env` file:
+
+```env
+VITE_API_URL=http://localhost:3000
+```
+
+#### 4. Start development server
+
+```bash
+npm run dev
+```
+
+The client booking interface will be available at `http://localhost:5174`
+
+## Development
+
+### Backend Development
+
+```bash
+cd backend
+npm run dev  # Start on http://localhost:3000
+```
+
+### Frontend Development
+
+```bash
+cd frontend
+npm run dev  # Start on http://localhost:5173
+```
+
+### Client Interface Development
+
+```bash
+cd lotos-spa-client
+npm run dev  # Start on http://localhost:5174
+```
+
+### Build for Production
+
+#### Backend
+```bash
+cd backend
+npm run build
 npm start
+```
+
+#### Frontend
+```bash
+cd frontend
+npm run build
+npm run preview  # Test production build
+```
+
+#### Client Interface
+```bash
+cd lotos-spa-client
+npm run build
+npm run preview  # Test production build
 ```
 
 ## Database Management
@@ -375,32 +492,164 @@ redis://localhost:6379
 - Check EMAIL_USER and EMAIL_PASSWORD
 - Test SMTP connection manually
 
+## Architecture
+
+### Backend Architecture
+
+The backend follows a modular architecture:
+
+```
+backend/src/
+├── modules/           # Feature modules
+│   ├── auth/         # Authentication & authorization
+│   ├── klienci/      # Client management
+│   ├── uslugi/       # Services management
+│   ├── rezerwacje/   # Reservation system
+│   ├── pakiety/      # Package management
+│   ├── vouchery/     # Voucher system
+│   ├── masazysci/    # Therapist management
+│   ├── gabinety/     # Room management
+│   ├── harmonogram/  # Scheduling
+│   ├── raporty/      # Reports & analytics
+│   ├── sms/          # SMS notifications
+│   ├── jobs/         # Background jobs
+│   └── public/       # Public API endpoints
+├── shared/           # Shared utilities
+│   ├── errors.ts
+│   ├── prisma.ts
+│   └── middleware/
+└── config/           # Configuration
+```
+
+### Frontend Architecture
+
+Both frontend applications use:
+- **React 18** with TypeScript
+- **React Router** for navigation
+- **Tailwind CSS** for styling
+- **Zustand** for state management
+- **Axios** for API communication
+
+### Database Schema
+
+The system uses Prisma ORM with support for both PostgreSQL and SQLite. Key entities:
+- Users (with role-based permissions)
+- Clients (with medical history)
+- Services (with variants and add-ons)
+- Reservations (with conflict detection)
+- Packages (with expiration tracking)
+- Vouchers (monetary and service-based)
+- Therapists (with schedules and specializations)
+- Rooms (with availability management)
+
 ## Contributing
 
-1. Create feature branch (`git checkout -b feature/amazing-feature`)
-2. Commit changes (`git commit -m 'Add amazing feature'`)
-3. Push to branch (`git push origin feature/amazing-feature`)
-4. Open Pull Request
+We welcome contributions! Here's how to get started:
+
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch from `main`
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. Make your changes
+4. Ensure code quality:
+   ```bash
+   # Run type checking
+   npm run type-check
+
+   # Run linter
+   npm run lint
+
+   # Run tests (if available)
+   npm test
+   ```
+5. Commit your changes with descriptive messages
+   ```bash
+   git commit -m 'feat: add amazing feature'
+   ```
+6. Push to your fork
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+7. Open a Pull Request
+
+### Commit Message Convention
+
+We follow conventional commits:
+- `feat:` - New feature
+- `fix:` - Bug fix
+- `docs:` - Documentation changes
+- `style:` - Code style changes (formatting, etc.)
+- `refactor:` - Code refactoring
+- `test:` - Adding or updating tests
+- `chore:` - Maintenance tasks
+
+### Code Style
+
+- Use TypeScript strict mode
+- Follow ESLint rules
+- Use Prettier for formatting
+- Write meaningful variable and function names
+- Add comments for complex logic
+- Keep functions small and focused
 
 ## License
 
 ISC License - See LICENSE file for details
 
+## Roadmap
+
+### Planned Features
+- [ ] Mobile application (React Native)
+- [ ] Advanced analytics dashboard
+- [ ] Multi-location support
+- [ ] Integration with more payment providers
+- [ ] WhatsApp notifications
+- [ ] Customer loyalty program
+- [ ] Gift card system enhancements
+- [ ] Calendar integrations (Google Calendar, Outlook)
+
 ## Support
 
-For issues and support, please contact: support@lotosspa.pl
+For issues and support:
+- Create an issue on [GitHub Issues](https://github.com/ubbag/LotosOS/issues)
+- Contact: support@lotosspa.pl
 
 ## Changelog
 
-### Version 1.0.0
-- Initial backend release
-- Core modules: auth, clients, services, reservations, packages, vouchers, reports
-- Payment integration ready
-- SMS and email notifications
-- Job queue system
-- Docker deployment
+### Version 1.0.0 (Initial Release)
+
+#### Backend
+- JWT authentication with RBAC
+- Complete REST API with 150+ endpoints
+- Prisma ORM with PostgreSQL/SQLite support
+- Background job processing with Bull
+- SMS and email notification system
+- Payment integration framework
+- Comprehensive error handling
+- Docker deployment support
+
+#### Frontend (Admin Dashboard)
+- Modern React + TypeScript interface
+- Complete CRUD operations for all entities
+- Responsive design with Tailwind CSS
+- Real-time reservation calendar
+- Analytics and reporting views
+- User management with role permissions
+
+#### Client Interface
+- Public booking system
+- Service catalog with filtering
+- Therapist selection
+- Online payment integration
+- Booking confirmation system
+- Voucher purchase flow
 
 ---
 
-**Last Updated**: 2024
+**Repository**: [github.com/ubbag/LotosOS](https://github.com/ubbag/LotosOS)
+**Last Updated**: December 2024
 **Status**: Production Ready
+**Maintainer**: CodeRabbit Ready
