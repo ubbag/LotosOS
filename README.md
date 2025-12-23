@@ -59,9 +59,9 @@ start_all.bat
 ```
 
 This will start:
-- Backend API on http://localhost:3000
-- Frontend admin dashboard on http://localhost:5173
-- Client booking interface on http://localhost:5174
+- Backend API on `http://localhost:3000`
+- Frontend admin dashboard on `http://localhost:5173`
+- Client booking interface on `http://localhost:5174`
 
 ### Manual setup
 
@@ -498,7 +498,7 @@ redis://localhost:6379
 
 The backend follows a modular architecture:
 
-```
+```text
 backend/src/
 ├── modules/           # Feature modules
 │   ├── auth/         # Authentication & authorization
@@ -615,7 +615,7 @@ ISC License - See LICENSE file for details
 
 For issues and support:
 - Create an issue on [GitHub Issues](https://github.com/ubbag/LotosOS/issues)
-- Contact: support@lotosspa.pl
+- Contact: `support@lotosspa.pl`
 
 ## Changelog
 
