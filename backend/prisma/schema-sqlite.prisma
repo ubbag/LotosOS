@@ -1,0 +1,396 @@
+// SQLite version for quick demo (no installation needed)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== MODELS ====================
+
+model User {
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  passwordHash          String
+  imie                  String
+  rola                  String   @default("RECEPCJA")
+  aktywny               Boolean  @default(true)
+  ostatnieLogowanie     DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  notatkiKlienta        NotatkaKlienta[]
+  rezerwacjeStworzone   Rezerwacja[] @relation("CreatedByUser")
+  zamkniecia            ZamkniecieDnia[]
+  transakcje            Transakcja[]
+
+  @@map("users")
+}
+
+model Klient {
+  id                    String   @id @default(cuid())
+  imie                  String
+  nazwisko              String
+  telefon               String   @unique
+  email                 String?
+  zrodlo                String?
+  aktywny               Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  notatkiKlienta        NotatkaKlienta[]
+  rezerwacje            Rezerwacja[]
+  pakietyKlienta        PakietKlienta[]
+  smsLogi               SMSLog[]
+
+  @@index([telefon])
+  @@index([aktywny])
+  @@map("klienci")
+}
+
+model NotatkaKlienta {
+  id                    String      @id @default(cuid())
+  klientId              String
+  typ                   String
+  tresc                 String
+  pokazujPrzyRezerwacji Boolean     @default(false)
+  createdById           String
+  createdAt             DateTime    @default(now())
+
+  // Relations
+  klient                Klient      @relation(fields: [klientId], references: [id], onDelete: Cascade)
+  createdBy             User        @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([klientId])
+  @@index([typ])
+  @@map("notatkiKlienta")
+}
+
+model Masazysta {
+  id                    String   @id @default(cuid())
+  imie                  String
+  nazwisko              String
+  specjalizacje         String
+  jezyki                String
+  zdjecieUrl            String?
+  aktywny               Boolean  @default(true)
+  kolejnosc             Int      @default(0)
+
+  // Relations
+  grafikPracy           GrafikPracy[]
+  rezerwacje            Rezerwacja[]
+
+  @@index([aktywny])
+  @@index([kolejnosc])
+  @@map("masazysci")
+}
+
+model GrafikPracy {
+  id                    String         @id @default(cuid())
+  masazystaId           String
+  data                  DateTime
+  godzinaOd             DateTime
+  godzinaDo             DateTime
+  status                String         @default("PRACUJE")
+
+  // Relations
+  masazysta             Masazysta      @relation(fields: [masazystaId], references: [id], onDelete: Cascade)
+
+  @@unique([masazystaId, data])
+  @@index([masazystaId])
+  @@index([data])
+  @@map("grafikPracy")
+}
+
+model Gabinet {
+  id                    String   @id @default(cuid())
+  numer                 String   @unique
+  nazwa                 String
+  aktywny               Boolean  @default(true)
+
+  // Relations
+  rezerwacje            Rezerwacja[]
+
+  @@index([aktywny])
+  @@map("gabinety")
+}
+
+model Usluga {
+  id                    String   @id @default(cuid())
+  nazwa                 String
+  kategoria             String
+  opis                  String?
+  aktywna               Boolean  @default(true)
+  kolejnosc             Int      @default(0)
+
+  // Relations
+  wariantyUslugi        WariantUslugi[]
+  rezerwacje            Rezerwacja[]
+  vouchery              Voucher[]
+
+  @@index([aktywna])
+  @@index([kategoria])
+  @@map("uslugi")
+}
+
+model WariantUslugi {
+  id                    String   @id @default(cuid())
+  uslugaId              String
+  czasMinut             Int
+  cenaRegularna         Float
+  cenaPromocyjna        Float?
+
+  // Relations
+  usluga                Usluga   @relation(fields: [uslugaId], references: [id], onDelete: Cascade)
+  rezerwacje            Rezerwacja[]
+
+  @@index([uslugaId])
+  @@map("wariantyUslugi")
+}
+
+model Doplata {
+  id                    String   @id @default(cuid())
+  nazwa                 String   @unique
+  cena                  Float
+  aktywna               Boolean  @default(true)
+
+  // Relations
+  rezerwacjeDoplata     RezerwacjaDoplata[]
+
+  @@map("doplaty")
+}
+
+model Rezerwacja {
+  id                    String             @id @default(cuid())
+  numer                 String             @unique @default(cuid())
+  klientId              String
+  masazystaId           String
+  gabinetId             String
+  uslugaId              String
+  wariantId             String
+  data                  DateTime
+  godzinaOd             DateTime
+  godzinaDo             DateTime
+  cenaCalokowita        Float
+  status                String             @default("NOWA")
+  zrodlo                String
+  platnoscMetoda        String
+  platnoscStatus        String             @default("NIEOPLACONA")
+  notatki               String?
+  createdById           String
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  // Relations
+  klient                Klient             @relation(fields: [klientId], references: [id], onDelete: Restrict)
+  masazysta             Masazysta          @relation(fields: [masazystaId], references: [id], onDelete: Restrict)
+  gabinet               Gabinet            @relation(fields: [gabinetId], references: [id], onDelete: Restrict)
+  usluga                Usluga             @relation(fields: [uslugaId], references: [id], onDelete: Restrict)
+  wariant               WariantUslugi      @relation(fields: [wariantId], references: [id], onDelete: Restrict)
+  createdBy             User               @relation("CreatedByUser", fields: [createdById], references: [id], onDelete: Restrict)
+  rezerwacjeDoplata     RezerwacjaDoplata[]
+  smsLogi               SMSLog[]
+  wykorzystaniePakietu  WykorzystaniePakietu[]
+  realizacjeVouchera    RealizacjaVouchera[]
+  transakcje            Transakcja[]
+
+  @@index([klientId])
+  @@index([masazystaId])
+  @@index([gabinetId])
+  @@index([uslugaId])
+  @@index([data])
+  @@index([status])
+  @@index([platnoscStatus])
+  @@index([data, masazystaId])
+  @@index([data, gabinetId])
+  @@map("rezerwacje")
+}
+
+model RezerwacjaDoplata {
+  id                    String   @id @default(cuid())
+  rezerwacjaId          String
+  doplataId             String
+  cena                  Float
+
+  // Relations
+  rezerwacja            Rezerwacja @relation(fields: [rezerwacjaId], references: [id], onDelete: Cascade)
+  doplata               Doplata  @relation(fields: [doplataId], references: [id], onDelete: Restrict)
+
+  @@unique([rezerwacjaId, doplataId])
+  @@index([rezerwacjaId])
+  @@index([doplataId])
+  @@map("rezerwacjeDoplata")
+}
+
+model PakietDefinicja {
+  id                    String   @id @default(cuid())
+  nazwa                 String   @unique
+  liczbaGodzin          Int
+  cena                  Float
+  waznoscDni            Int
+  aktywny               Boolean  @default(true)
+
+  // Relations
+  pakietyKlienta        PakietKlienta[]
+
+  @@index([aktywny])
+  @@map("pakietyDefinicja")
+}
+
+model PakietKlienta {
+  id                    String          @id @default(cuid())
+  klientId              String
+  pakietId              String
+  dataZakupu            DateTime        @default(now())
+  godzinyWykupione      Int
+  godzinyWykorzystane   Int             @default(0)
+  godzinyPozostale      Int
+  dataWaznosci          DateTime
+  status                String          @default("AKTYWNY")
+
+  // Relations
+  klient                Klient          @relation(fields: [klientId], references: [id], onDelete: Cascade)
+  pakiet                PakietDefinicja @relation(fields: [pakietId], references: [id], onDelete: Restrict)
+  wykorzystania         WykorzystaniePakietu[]
+  transakcje            Transakcja[]
+
+  @@index([klientId])
+  @@index([status])
+  @@index([dataWaznosci])
+  @@map("pakietyKlienta")
+}
+
+model WykorzystaniePakietu {
+  id                    String   @id @default(cuid())
+  pakietKlientaId       String
+  rezerwacjaId          String
+  wykorzystaneGodziny   Int
+  data                  DateTime @default(now())
+
+  // Relations
+  pakietKlienta         PakietKlienta @relation(fields: [pakietKlientaId], references: [id], onDelete: Cascade)
+  rezerwacja            Rezerwacja @relation(fields: [rezerwacjaId], references: [id], onDelete: Cascade)
+
+  @@index([pakietKlientaId])
+  @@index([rezerwacjaId])
+  @@map("wykorzystaniePakietu")
+}
+
+model Voucher {
+  id                    String           @id @default(cuid())
+  kod                   String           @unique
+  typ                   String
+  wartoscPoczatkowa     Float
+  wartoscPozostala      Float
+  uslugaId              String?
+  kupujacyImie          String
+  kupujacyEmail         String
+  obdarowanyImie        String?
+  obdarowanyEmail       String?
+  wiadomosc             String?
+  dataZakupu            DateTime         @default(now())
+  dataWaznosci          DateTime
+  status                String           @default("AKTYWNY")
+  zrodlo                String
+
+  // Relations
+  usluga                Usluga?          @relation(fields: [uslugaId], references: [id], onDelete: SetNull)
+  realizacje            RealizacjaVouchera[]
+  transakcje            Transakcja[]
+
+  @@index([kod])
+  @@index([status])
+  @@index([dataWaznosci])
+  @@map("vouchery")
+}
+
+model RealizacjaVouchera {
+  id                    String   @id @default(cuid())
+  voucherId             String
+  rezerwacjaId          String
+  kwota                 Float
+  saldoPo               Float
+  data                  DateTime @default(now())
+
+  // Relations
+  voucher               Voucher  @relation(fields: [voucherId], references: [id], onDelete: Cascade)
+  rezerwacja            Rezerwacja @relation(fields: [rezerwacjaId], references: [id], onDelete: Cascade)
+
+  @@index([voucherId])
+  @@index([rezerwacjaId])
+  @@map("realizacjeVouchera")
+}
+
+model Transakcja {
+  id                    String          @id @default(cuid())
+  rezerwacjaId          String?
+  pakietKlientaId       String?
+  voucherId             String?
+  kwota                 Float
+  metoda                String
+  typ                   String
+  data                  DateTime        @default(now())
+  userId                String
+  notatki               String?
+
+  // Relations
+  rezerwacja            Rezerwacja?     @relation(fields: [rezerwacjaId], references: [id], onDelete: SetNull)
+  pakietKlienta         PakietKlienta?  @relation(fields: [pakietKlientaId], references: [id], onDelete: SetNull)
+  voucher               Voucher?        @relation(fields: [voucherId], references: [id], onDelete: SetNull)
+  user                  User            @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([rezerwacjaId])
+  @@index([pakietKlientaId])
+  @@index([voucherId])
+  @@index([userId])
+  @@index([data])
+  @@map("transakcje")
+}
+
+model ZamkniecieDnia {
+  id                    String   @id @default(cuid())
+  data                  DateTime @unique
+  utargSpodziewany      Float
+  utargRzeczywisty      Float
+  roznica               Float
+  gotowkaSpodziewana    Float
+  gotowkaRzeczywista    Float
+  kartaSpodziewana      Float
+  kartaRzeczywista      Float
+  userId                String
+  uwagi                 String?
+  createdAt             DateTime @default(now())
+
+  // Relations
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([data])
+  @@index([userId])
+  @@map("zamkniecia")
+}
+
+model SMSLog {
+  id                    String      @id @default(cuid())
+  klientId              String?
+  rezerwacjaId          String?
+  typ                   String
+  tresc                 String
+  dataWyslania          DateTime    @default(now())
+  status                String      @default("WYSLANY")
+  bladOpis              String?
+
+  // Relations
+  klient                Klient?     @relation(fields: [klientId], references: [id], onDelete: Cascade)
+  rezerwacja            Rezerwacja? @relation(fields: [rezerwacjaId], references: [id], onDelete: SetNull)
+
+  @@index([klientId])
+  @@index([rezerwacjaId])
+  @@index([typ])
+  @@index([status])
+  @@map("smsLogi")
+}

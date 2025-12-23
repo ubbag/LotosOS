@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx prisma db push:*)",
+      "Bash(echo:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(sqlite3:*)",
+      "Bash(npm run type-check:*)",
+      "Bash(find:*)",
+      "Bash(netstat:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm run db:seed:*)",
+      "Bash(npm run:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(npx prisma db execute:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(test:*)",
+      "Bash(curl:*)",
+      "Bash(npm install:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(del \"C:\\Users\\domin\\Desktop\\lotos-system\\frontend\\src\\pages\\KategorieP age.tsx\")",
+      "Bash(dir:*)",
+      "Bash(timeout 3 bash:*)",
+      "Bash(timeout 5 bash:*)",
+      "Bash(pkill:*)",
+      "Bash(start_all.bat)",
+      "Bash(cmd /c start_all.bat)",
+      "Bash(node check-services.js:*)",
+      "Bash(node:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,75 @@
+### Raport zmian dokonanych przez Gemini w projekcie Lotos SPA
+
+**Cel:** Poprawa UI/UX, hosting frontendu i backendu, a następnie implementacja przełącznika widoku oraz rozbudowa harmonogramu.
+
+**Wprowadzone zmiany, chronologicznie:**
+
+1.  **Rozwiązanie problemów z backendem i seedingiem bazy danych:**
+    *   **Problem:** Błąd podczas seedowania bazy danych (`prisma/seed.ts`) - brakowało tworzenia tabeli `kategorie`, błędy TypeScript w przypisywaniu kategorii do usług.
+    *   **Rozwiązanie:**
+        *   Zaktualizowano `prisma/seed.ts` o tworzenie kategorii (za pomocą `upsert`) przed tworzeniem usług.
+        *   Zmodyfikowano tworzenie usług, aby używały `{ connect: { nazwa: 'NAZWA_KATEGORII' } }` zamiast bezpośredniego przypisania stringa.
+        *   Usunięto nieużywane deklaracje zmiennych w `prisma/seed.ts` (`kategoriaRelaksacyjny` itd.), które powodowały błędy TS6133.
+        *   Wygenerowano nową migrację (`add_kategorie_table`) za pomocą `npx prisma migrate dev`, aby tabela `kategorie` została poprawnie dodana do schematu bazy danych.
+        *   Ponownie uruchomiono `npx prisma migrate reset --force`, aby zresetować bazę danych, zastosować wszystkie migracje i poprawnie uruchomić seed.
+
+2.  **Hosting i konfiguracja:**
+    *   Zainstalowano zależności dla `backend` i `gemini uiux`.
+    *   **Problem:** Konflikt portów - frontend i backend próbowały uruchomić się na `http://localhost:3000`.
+    *   **Rozwiązanie:** Zmieniono port `gemini uiux` na `3001` w `gemini uiux/vite.config.ts`.
+    *   Uruchomiono backend na `http://localhost:3000` i frontend na `http://localhost:3001`.
+    *   **Ułatwienie uruchamiania:** Stworzono plik `start_all.bat` w głównym katalogu projektu, który uruchamia oba serwery w osobnych oknach terminala.
+
+3.  **Wstępne poprawki UI/UX i integracja z API (moduły):**
+    *   **Poprawiono placeholdery:** Zaktualizowano komunikaty "W budowie" dla modułów "Usługi" i "Ustawienia" w `gemini uiux/App.tsx` na bardziej szczegółowe.
+    *   **Integracja API - Klienci (`ClientsView`):**
+        *   Zainstalowano `axios` w `gemini uiux`.
+        *   Stworzono `gemini uiux/services/api.ts` z funkcją `fetchClients`.
+        *   Zaktualizowano `gemini uiux/.env.local` z `VITE_API_URL=http://localhost:3000`.
+        *   Zmodyfikowano `gemini uiux/components/ClientsView.tsx` do pobierania danych z API (z mapowaniem pól `imie`, `nazwisko` na `name`, `aktywny` na `status` oraz generowaniem `avatarUrl`).
+        *   Zaktualizowano `gemini uiux/types.ts` o opcjonalne pola (`email?`, `lastVisit?`, `avatarUrl?`) i dodano `imie`, `nazwisko`.
+    *   **Problem - Brak danych w widokach po podpięciu API:** Okazało się, że backend wymaga autoryzacji, a frontend jej nie dostarczał.
+    *   **Rozwiązanie - Bypass autoryzacji w dev mode:** Zmodyfikowano `backend/src/modules/auth/auth.middleware.ts`, aby w trybie `development` automatycznie wstrzykiwać mockowego użytkownika administracyjnego, jeśli brak nagłówka autoryzacji.
+    *   **Problem - 404 Not Found dla /api/* endpointów:** Okazało się, że trasy Fastify w backendzie nie były zarejestrowane z prefiksem `/api`.
+    *   **Rozwiązanie:** Zmodyfikowano `backend/src/index.ts`, aby wszystkie trasy (klienci, pracownicy, rezerwacje itd.) były zarejestrowane pod prefiksem `/api`.
+    *   **Integracja API - Pracownicy (`EmployeesView`):**
+        *   Dodano `fetchEmployees` do `gemini uiux/services/api.ts` (mapowanie pól `imie`, `nazwisko`, `aktywny`, parsowanie `specjalizacje`).
+        *   Zmodyfikowano `gemini uiux/components/EmployeesView.tsx` do pobierania danych z API.
+    *   **Integracja API - Rezerwacje (`ReservationsView`):**
+        *   Dodano `fetchReservations` do `gemini uiux/services/api.ts` (mapowanie pól rezerwacji i relacji, formatowanie dat).
+        *   Zmodyfikowano `gemini uiux/components/ReservationsView.tsx` do pobierania danych z API.
+
+4.  **Implementacja przełącznika widoku (Lista/Siatka):**
+    *   Stworzono komponent `gemini uiux/components/ui/ViewToggle.tsx`.
+    *   Zaimplementowano przełącznik w modułach:
+        *   **Klienci (`ClientsView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart.
+        *   **Pracownicy (`EmployeesView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart.
+        *   **Rezerwacje (`ReservationsView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart.
+        *   **Gabinety (`RoomsView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart.
+        *   **Vouchery (`VouchersView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart.
+        *   **Kategorie (`CategoriesView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart. (Naprawiono błąd duplikacji `MOCK_CATEGORIES` w tym pliku).
+        *   **Pakiety (`PackagesView`):** Zaimplementowano przełączanie między widokiem tabelarycznym a siatką kart dla obu zakładek "Oferta" i "Zakupione".
+        *   **Usługi (`ServicesView`):** Stworzono od podstaw komponent `ServicesView.tsx` (wcześniej był to placeholder), zaimplementowano mockowe dane i przełączanie między widokiem tabelarycznym a siatką kart.
+        *   Zaktualizowano `App.tsx` o import i użycie `ServicesView`.
+
+5.  **Rozbudowa Harmonogramu i dodanie Grafiku Pracy:**
+    *   **Problem:** Wcześniej Harmonogram został przez pomyłkę zamieniony na Grafik Pracy.
+    *   **Rozwiązanie:**
+        *   Zainstalowano `date-fns`.
+        *   **Stworzono nowy moduł `Grafik Pracy` (`RosterView.tsx`)**: Cały kod tygodniowego harmonogramu pracowników (oś Y: pracownicy, oś X: dni tygodnia) został przeniesiony do tego nowego pliku. Używa `fetchEmployees` i generuje mockowe zmiany.
+        *   **Przywrócono i rozbudowano `Harmonogram` (`ScheduleView.tsx`)**: Został całkowicie przebudowany na widok harmonogramu dziennego, gdzie:
+            *   **Oś Y:** Godziny (od 10:00 do 22:00, co 30 minut)
+            *   **Oś X:** Pracownicy
+            *   Rezerwacje są pozycjonowane absolutnie, odzwierciedlając dokładny czas rozpoczęcia i długość trwania.
+            *   Zaktualizowano `App.tsx`, `types.ts` i `Sidebar.tsx`, aby dodać "Grafik Pracy" jako nową opcję w menu.
+        *   **Poprawki układu w Harmonogramie:**
+            *   **Layout:** Zmieniono globalny layout `App.tsx` oraz usunięto sztywne wysokości z modułów, aby harmonogram zajmował całą dostępną przestrzeń.
+            *   **Sticky Headers:** Poprawiono pozycjonowanie `sticky` dla nagłówków pracowników i osi czasu, w tym rogu (róg `z-50`, nagłówki `z-40`).
+            *   **Pozycjonowanie Osi Y:** Etykiety godzin zostały poprawione (np. `transform: translateY(-50%)` dla etykiet od 11:00 w górę, a 10:00 bez transformacji) i dostosowano ich rozmiar/marginesy.
+            *   **Szerokość kolumn:** Zmieniono układ z `grid` na `flex` z `flex-1 min-w-[200px]` dla kolumn pracowników. Dzięki temu kolumny rozciągają się, aby wypełnić dostępną przestrzeń do prawej krawędzi, ale mają minimum szerokości, co zapewnia responsywność i uniknięcie zbędnego scrolla poziomego dla małej liczby pracowników.
+
+---
+
+**Podsumowując, wprowadziłem znaczące zmiany w strukturze UI frontendu, konfiguracji backendu i połączeniach API, aby aplikacja była bardziej funkcjonalna i zgodna z oczekiwaniami UX.**
+
+Claude powinien skupić się na istniejącej strukturze, dążąc do zastąpienia danych mockowych (szczególnie w `RoomsView`, `VouchersView`, `CategoriesView`, `PackagesView`, `ServicesView` oraz *danych zmian* w `RosterView` i *danych rezerwacji* w `ScheduleView`) rzeczywistymi wywołaniami API. Może również rozważyć implementację modalów edycji/dodawania w każdym z widoków.

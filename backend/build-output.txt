@@ -1,0 +1,26 @@
+
+> backend@1.0.0 build
+> tsc
+
+src/modules/auth/index.ts(6,10): error TS2305: Module '"./auth.routes"' has no exported member 'registerAuthRoutes'.
+src/modules/auth/index.ts(7,10): error TS2305: Module '"./auth.middleware"' has no exported member 'authMiddleware'.
+src/modules/auth/index.ts(7,26): error TS2305: Module '"./auth.middleware"' has no exported member 'authenticateRequest'.
+src/modules/gabinety/index.ts(6,10): error TS2305: Module '"./gabinety.routes"' has no exported member 'registerGabinetyRoutes'.
+src/modules/klienci/index.ts(6,10): error TS2305: Module '"./klienci.routes"' has no exported member 'registerKlienciRoutes'.
+src/modules/masazysci/index.ts(5,52): error TS2307: Cannot find module './masazysci.service' or its corresponding type declarations.
+src/modules/masazysci/index.ts(6,41): error TS2307: Cannot find module './masazysci.routes' or its corresponding type declarations.
+src/modules/masazysci/index.ts(7,15): error TS2307: Cannot find module './masazysci.schemas' or its corresponding type declarations.
+src/modules/pakiety/index.ts(6,10): error TS2305: Module '"./pakiety.routes"' has no exported member 'registerPakietyRoutes'.
+src/modules/public/index.ts(6,10): error TS2305: Module '"./public.routes"' has no exported member 'registerPublicRoutes'.
+src/modules/raporty/index.ts(6,10): error TS2305: Module '"./raporty.routes"' has no exported member 'registerRaportyRoutes'.
+src/modules/rezerwacje/index.ts(6,10): error TS2724: '"./rezerwacje.routes"' has no exported member named 'registerRezerwacjeRoutes'. Did you mean 'rezerwacjeRoutes'?
+src/modules/rezerwacje/rezerwacje.service.ts(225,9): error TS2322: Type '{ numer: string; klientId: string; masazystaId: string | undefined; gabinetId: string | undefined; uslugaId: string; wariantId: string; data: Date; godzinaOd: Date; godzinaDo: Date; ... 6 more ...; createdById: string; }' is not assignable to type '(Without<RezerwacjaCreateInput, RezerwacjaUncheckedCreateInput> & RezerwacjaUncheckedCreateInput) | (Without<...> & RezerwacjaCreateInput)'.
+  Types of property 'masazystaId' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/modules/rezerwacje/rezerwacje.service.ts(228,24): error TS18048: 'validation.data' is possibly 'undefined'.
+src/modules/rezerwacje/rezerwacje.service.ts(229,22): error TS18048: 'validation.data' is possibly 'undefined'.
+src/modules/sms/index.ts(6,10): error TS2305: Module '"./sms.routes"' has no exported member 'registerSMSRoutes'.
+src/modules/sms/sms.provider.ts(117,7): error TS2367: This comparison appears to be unintentional because the types '"mock" | "twilio" | "other"' and '"smsapi"' have no overlap.
+src/modules/uslugi/index.ts(6,10): error TS2305: Module '"./uslugi.routes"' has no exported member 'registerUslugiRoutes'.
+src/modules/vouchery/index.ts(6,10): error TS2305: Module '"./vouchery.routes"' has no exported member 'registerVoucheryRoutes'.

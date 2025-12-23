@@ -1,0 +1,1131 @@
+# Complete UI/UX Design System for Lotos SPA Management Platform
+
+## Executive Summary
+
+Design a comprehensive, professional management system for "Lotos SPA" - a luxury massage salon. The system must be intuitive, elegant, and efficient, serving receptionists, therapists, and managers in daily operations. The interface should evoke calmness and professionalism while maximizing operational efficiency through modern, polished UI patterns.
+
+## System Architecture Overview
+
+### Application Type
+- **Platform**: Web-based SPA (Single Page Application)
+- **Tech Stack**: React + TypeScript + Tailwind CSS
+- **Backend**: RESTful API (Fastify + Prisma + PostgreSQL/SQLite)
+- **Authentication**: JWT-based session management
+- **Target Users**: Receptionists (primary), Managers, Therapists
+
+### Core Modules (13 Main Sections)
+
+1. **Dashboard** - Overview, statistics, and quick actions
+2. **Clients (Klienci)** - Client database with visit history
+3. **Reservations (Rezerwacje)** - Booking management
+4. **Schedule (Harmonogram)** - Therapist availability calendar
+5. **Therapists (Pracownicy)** - Staff management
+6. **Treatment Rooms (Gabinety)** - Room availability
+7. **Services (Usługi)** - Service catalog and pricing
+8. **Categories (Kategorie)** - Service categorization
+9. **Packages (Pakiety)** - Hour-based service packages
+10. **Vouchers (Vouchery)** - Gift voucher management
+11. **Reports (Raporty)** - Revenue and analytics
+12. **SMS** - Communication module
+13. **Settings (Ustawienia)** - System configuration
+
+---
+
+## Visual Design System
+
+### Color Palette
+
+**Primary Colors:**
+```
+Blue-600: #2563EB   // Primary actions, CTAs, active states
+Blue-700: #1D4ED8   // Hover states on primary elements
+Blue-500: #3B82F6   // Accents, left borders, icon highlights
+Blue-100: #DBEAFE   // Light backgrounds, icon containers
+Blue-50:  #EFF6FF   // Very light backgrounds, subtle highlights
+```
+
+**Neutral Colors (Gray Scale):**
+```
+Gray-900: #111827   // Sidebar background, primary headings
+Gray-800: #1F2937   // Sidebar hover states
+Gray-700: #374151   // Secondary text
+Gray-600: #4B5563   // Tertiary text
+Gray-500: #6B7280   // Placeholder text, disabled text
+Gray-400: #9CA3AF   // Sidebar inactive icons
+Gray-300: #D1D5DB   // Borders, dividers
+Gray-200: #E5E7EB   // Light borders
+Gray-100: #F3F4F6   // Secondary backgrounds
+Gray-50:  #F9FAFB   // Card backgrounds, page background
+White:    #FFFFFF   // Main background, card surfaces
+```
+
+**Semantic Colors:**
+```
+Success (Green-600): #059669  // Completed reservations, success states
+Success (Green-100): #D1FAE5  // Success badge backgrounds
+Warning (Amber-600): #D97706  // Pending states, warnings
+Warning (Amber-100): #FEF3C7  // Warning badge backgrounds
+Error (Red-600):     #DC2626  // Delete actions, errors, cancelled
+Error (Red-100):     #FEE2E2  // Error badge backgrounds
+```
+
+### Typography System
+
+**Font Stack:**
+```css
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
+             Roboto, 'Helvetica Neue', Arial, sans-serif;
+font-family-mono: 'SF Mono', Monaco, 'Cascadia Code',
+                  'Courier New', monospace;
+```
+
+**Type Scale:**
+```
+Page Title (H1):      30px / 1.875rem - font-bold - gray-900
+Page Subtitle:        14px / 0.875rem - font-normal - gray-500
+Section Header (H2):  24px / 1.5rem   - font-bold - gray-900
+Card Title (H3):      18px / 1.125rem - font-bold - gray-900
+Body Text:            14px / 0.875rem - font-normal - gray-700
+Small Text:           12px / 0.75rem  - font-normal - gray-500
+Tiny Text (Labels):   10px / 0.625rem - font-medium - gray-600
+Section Labels:       12px / 0.75rem  - font-semibold - gray-500 - UPPERCASE - tracking-wider
+```
+
+### Spacing System (Tailwind Scale)
+```
+xs:  4px   (gap-1, p-1)
+sm:  8px   (gap-2, p-2)
+md:  12px  (gap-3, p-3)
+lg:  16px  (gap-4, p-4)
+xl:  24px  (gap-6, p-6)
+2xl: 32px  (gap-8, p-8)
+```
+
+### Border Radius
+```
+Small:  4px  (rounded)
+Medium: 8px  (rounded-lg) - standard for cards, inputs, buttons
+Large:  12px (rounded-xl) - stat cards, special cards
+Full:   999px (rounded-full) - badges, avatars, icon containers
+```
+
+### Shadows
+```
+Card Default:     shadow-sm (0 1px 2px rgba(0,0,0,0.05))
+Card Hover:       shadow-xl (0 20px 25px rgba(0,0,0,0.1))
+Button Default:   shadow-sm
+Button Hover:     shadow-md
+Modal:            shadow-2xl
+Stat Card:        shadow-sm with hover:shadow-md
+Logo Container:   shadow-lg with shadow-blue-900/50 (glow effect)
+```
+
+### Animations
+```css
+/* Fade in animation for page content */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Standard transitions */
+transition-all duration-200  // Buttons, small interactions
+transition-all duration-300  // Cards, larger elements
+transition-colors            // Color-only transitions
+transition-shadow            // Shadow-only transitions
+```
+
+---
+
+## Layout Structure
+
+### Main Application Layout
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  [Sidebar - 256px]     │  [Main Content Area]                │
+│  Fixed, Gray-900       │  Flex-1, Gray-50 background         │
+│                        │                                      │
+│  ┌──────────────────┐  │  [Mobile Header - only <lg]         │
+│  │ Logo + Brand     │  │  ─────────────────────────────      │
+│  │ Lotos SPA        │  │                                      │
+│  │ System Zarządz.  │  │  [Page Header]                      │
+│  └──────────────────┘  │  - Title (H1) + Subtitle            │
+│                        │  - Action Buttons (right aligned)    │
+│  ┌──────────────────┐  │                                      │
+│  │ OPERACYJNE       │  │  ─────────────────────────────      │
+│  │ Dashboard        │  │                                      │
+│  │ Klienci          │  │  [Statistics Cards Grid]            │
+│  │ Rezerwacje       │  │  (if applicable to page)            │
+│  │ Harmonogram      │  │                                      │
+│  └──────────────────┘  │  ─────────────────────────────      │
+│                        │                                      │
+│  ┌──────────────────┐  │  [Filters / Search / View Toggle]   │
+│  │ ZASOBY           │  │                                      │
+│  │ Pracownicy       │  │  ─────────────────────────────      │
+│  │ Gabinety         │  │                                      │
+│  │ Usługi           │  │  [Main Content]                     │
+│  │ Kategorie        │  │  Grid of Cards OR Table             │
+│  └──────────────────┘  │  (3 columns on desktop)             │
+│                        │                                      │
+│  ┌──────────────────┐  │                                      │
+│  │ SPRZEDAŻ         │  │                                      │
+│  │ Pakiety          │  │                                      │
+│  │ Vouchery         │  │                                      │
+│  └──────────────────┘  │                                      │
+│                        │                                      │
+│  ┌──────────────────┐  │                                      │
+│  │ ADMINISTRACJA    │  │                                      │
+│  │ Raporty          │  │                                      │
+│  │ SMS              │  │                                      │
+│  │ Ustawienia       │  │                                      │
+│  └──────────────────┘  │                                      │
+│                        │                                      │
+│  ┌──────────────────┐  │                                      │
+│  │ [Wyloguj się]    │  │                                      │
+│  │ (Red accent)     │  │                                      │
+│  └──────────────────┘  │                                      │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Sidebar Navigation Specifications
+
+**Dimensions & Structure:**
+```
+Width: 256px (w-64)
+Position: Fixed on desktop, slide-in drawer on mobile
+Background: bg-gray-900
+Text: text-white
+Z-index: z-40
+
+Mobile behavior:
+  - Hidden by default (translate-x-full)
+  - Slides in when hamburger clicked
+  - Backdrop overlay (bg-black/50)
+  - Closes on navigation click
+```
+
+**Logo Area:**
+```jsx
+<div className="h-20 flex items-center px-6 border-b border-gray-800">
+  {/* Logo Icon Circle */}
+  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3 shadow-lg shadow-blue-900/50">
+    <Flower2 className="text-white" size={24} />
+  </div>
+
+  {/* Brand Text */}
+  <div>
+    <h1 className="text-xl font-bold tracking-tight text-white">Lotos SPA</h1>
+    <p className="text-xs text-gray-400">System Zarządzania</p>
+  </div>
+</div>
+```
+
+**Navigation Groups:**
+```jsx
+{/* Group Header */}
+<p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+  OPERACYJNE
+</p>
+
+{/* Navigation Items */}
+<nav className="mb-6">
+  <button className={`
+    w-full flex items-center space-x-3 px-4 py-3 rounded-lg
+    transition-all duration-200 mb-1
+    ${isActive
+      ? 'bg-blue-600 text-white shadow-lg'
+      : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+    }
+  `}>
+    <Icon size={20} />
+    <span className="font-medium">Label</span>
+  </button>
+</nav>
+```
+
+**Navigation Groups Structure:**
+1. **OPERACYJNE** (Core Operations)
+   - Dashboard (LayoutDashboard icon)
+   - Klienci (Users icon)
+   - Rezerwacje (CalendarClock icon)
+   - Harmonogram (CalendarDays icon)
+
+2. **ZASOBY** (Resources)
+   - Pracownicy (UserCog icon)
+   - Gabinety (DoorOpen icon)
+   - Usługi (Sparkles icon)
+   - Kategorie (Tags icon)
+
+3. **SPRZEDAŻ** (Sales)
+   - Pakiety (Package icon)
+   - Vouchery (Ticket icon)
+
+4. **ADMINISTRACJA** (Admin)
+   - Raporty (BarChart3 icon) - Manager/Owner only
+   - SMS (MessageSquare icon)
+   - Ustawienia (Settings icon)
+
+**Logout Button (Footer):**
+```jsx
+<div className="p-4 border-t border-gray-800">
+  <button className="
+    w-full flex items-center space-x-3 px-4 py-3 rounded-lg
+    text-red-400 hover:bg-red-900/20 hover:text-red-300
+    transition-colors
+  ">
+    <LogOut size={20} />
+    <span className="font-medium">Wyloguj się</span>
+  </button>
+</div>
+```
+
+### Main Content Area
+
+**Container Specifications:**
+```jsx
+<main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+  <div className="space-y-8 animate-fade-in">
+    {/* Content goes here */}
+  </div>
+</main>
+```
+
+**Standard Page Header Pattern:**
+```jsx
+<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Page Title</h1>
+    <p className="text-gray-500 mt-1">Page description subtitle</p>
+  </div>
+  <div className="flex gap-3">
+    {/* Search bar if applicable */}
+    <Button icon={Plus}>Primary Action</Button>
+  </div>
+</div>
+```
+
+---
+
+## Component Specifications
+
+### 1. Statistics Card Component
+
+**Structure & Style:**
+```jsx
+<div className="
+  bg-gradient-to-br from-white to-blue-50
+  border border-blue-200
+  rounded-xl
+  p-6
+  flex items-start justify-between
+  shadow-sm hover:shadow-md
+  transition-shadow
+">
+  <div>
+    <p className="text-sm font-medium text-gray-500 mb-1">Label</p>
+    <h3 className="text-3xl font-bold text-gray-900 mb-1">Value</h3>
+    <p className="text-xs text-blue-600 font-medium">Subtext with trend</p>
+  </div>
+  <div className="p-3 bg-blue-100 rounded-full text-blue-600">
+    <Icon size={24} />
+  </div>
+</div>
+```
+
+**Grid Layout:**
+```
+grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6
+```
+
+**Examples:**
+```
+Label: "Dzisiejsze Wizyty"
+Value: "24"
+Subtext: "+12% wczoraj"
+Icon: Calendar
+
+Label: "Aktywni Klienci"
+Value: "854"
+Subtext: "+24 w tym miesiącu"
+Icon: Users
+```
+
+### 2. Grid Card Component (Primary Pattern)
+
+**CRITICAL Structure for Consistent Heights:**
+```jsx
+<Card className="group">  {/* group for group-hover effects */}
+  {/* Content Section - flex-1 takes available space */}
+  <div className="flex-1">
+    {/* Header */}
+    <div className="flex items-start justify-between mb-4">
+      <div className="flex items-center space-x-4">
+        {/* Avatar/Icon circle */}
+        <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center border-2 border-blue-100">
+          <Icon size={24} className="text-blue-600" />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+            Title
+          </h3>
+          <Badge variant="active">STATUS</Badge>
+        </div>
+      </div>
+    </div>
+
+    {/* Info Boxes */}
+    <div className="space-y-3 mb-6">
+      <div className="flex items-center text-gray-600 bg-blue-50/50 p-2 rounded-lg">
+        <Icon size={16} className="mr-3 text-blue-500" />
+        <span className="text-sm">Information</span>
+      </div>
+    </div>
+  </div>
+
+  {/* Action Section - mt-auto pushes to bottom */}
+  <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-2">
+    <Button variant="ghost" size="sm" className="w-full justify-start text-blue-600 hover:bg-blue-50" icon={Icon}>
+      Primary Action
+    </Button>
+    <div className="flex gap-2">
+      <Button variant="secondary" size="sm" className="flex-1" icon={Edit2}>Edit</Button>
+      <Button variant="danger-ghost" size="sm" className="flex-1" icon={Trash2}>Delete</Button>
+    </div>
+  </div>
+</Card>
+```
+
+**Card Base Component:**
+```jsx
+<div className={`
+  relative
+  bg-gradient-to-br from-white to-blue-50
+  border-l-4 border-blue-500
+  rounded-lg
+  shadow-sm hover:shadow-xl
+  transition-all duration-300
+  flex flex-col
+  h-full
+  ${noPadding ? '' : 'p-6'}
+  ${className}
+`}>
+  {children}
+</div>
+```
+
+**Info Box Patterns:**
+```jsx
+// Primary Info (Blue accent)
+<div className="flex items-center text-gray-600 bg-blue-50/50 p-2 rounded-lg">
+  <Icon size={16} className="mr-3 text-blue-500" />
+  <span className="text-sm">Value</span>
+</div>
+
+// Neutral Info (Gray)
+<div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+  <Icon size={16} className="mr-3 text-gray-500" />
+  <span className="text-sm">Value</span>
+</div>
+
+// Complex Info Box
+<div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+  <div className="flex items-center gap-2 mb-2">
+    <Icon size={16} className="text-blue-600" />
+    <p className="text-xs text-gray-600">Label</p>
+  </div>
+  <p className="font-semibold text-blue-900">Value</p>
+</div>
+```
+
+### 3. Button Component Variants
+
+**Base Structure:**
+```jsx
+const baseStyles = `
+  inline-flex items-center justify-center
+  font-medium
+  transition-all duration-200
+  rounded-lg
+  focus:outline-none focus:ring-2 focus:ring-offset-1
+  disabled:opacity-50 disabled:cursor-not-allowed
+`;
+```
+
+**Variants:**
+```jsx
+const variants = {
+  primary: `
+    bg-blue-600 hover:bg-blue-700
+    text-white
+    shadow-sm hover:shadow
+    focus:ring-blue-500
+    border border-transparent
+  `,
+
+  secondary: `
+    bg-white
+    border border-gray-300
+    text-gray-700
+    hover:bg-gray-50
+    focus:ring-gray-500
+  `,
+
+  danger: `
+    bg-red-600 hover:bg-red-700
+    text-white
+    shadow-sm
+    focus:ring-red-500
+    border border-transparent
+  `,
+
+  ghost: `
+    bg-transparent
+    hover:bg-gray-100
+    text-gray-600 hover:text-gray-900
+    border border-transparent
+  `,
+
+  'danger-ghost': `
+    bg-transparent
+    hover:bg-red-50
+    text-red-600 hover:text-red-700
+    border border-transparent
+  `,
+};
+```
+
+**Sizes:**
+```jsx
+const sizes = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-base",
+};
+
+// Padding logic
+Icon only:
+  sm: p-1.5
+  md: p-2
+  lg: p-3
+
+With text:
+  sm: px-3 py-1.5
+  md: px-4 py-2
+  lg: px-6 py-3
+```
+
+**Icon Integration:**
+```jsx
+{Icon && <Icon className={`${iconSize} ${!iconOnly ? 'mr-2' : ''}`} />}
+{children}
+```
+
+### 4. Badge Component
+
+**Structure:**
+```jsx
+<span className={`
+  px-3 py-1
+  rounded-full
+  text-xs font-bold
+  uppercase tracking-wide
+  ${variants[variant]}
+`}>
+  {children}
+</span>
+```
+
+**Variants:**
+```jsx
+const variants = {
+  active:  'bg-blue-100 text-blue-800',
+  success: 'bg-green-100 text-green-800',
+  warning: 'bg-amber-100 text-amber-800',
+  danger:  'bg-red-100 text-red-800',
+  neutral: 'bg-gray-100 text-gray-800',
+};
+```
+
+**Usage Examples:**
+```jsx
+<Badge variant="active">AKTYWNY</Badge>
+<Badge variant="success">ZAKOŃCZONA</Badge>
+<Badge variant="warning">OCZEKUJE</Badge>
+<Badge variant="danger">ANULOWANA</Badge>
+```
+
+### 5. Modal Component
+
+**Structure:**
+```jsx
+{/* Backdrop */}
+<div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+
+  {/* Modal Container */}
+  <div className="
+    bg-white rounded-xl
+    w-full max-w-md
+    max-h-[90vh]
+    overflow-hidden
+    flex flex-col
+    shadow-2xl
+    animate-fade-in
+  ">
+
+    {/* Header */}
+    <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+      <h2 className="text-2xl font-bold text-gray-900">Title</h2>
+      <button className="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+    </div>
+
+    {/* Content */}
+    <div className="overflow-y-auto flex-1 p-6">
+      {children}
+    </div>
+
+    {/* Footer */}
+    <div className="p-6 border-t border-gray-200 bg-gray-50 flex justify-end gap-3">
+      <Button variant="ghost">Cancel</Button>
+      <Button variant="primary">Save</Button>
+    </div>
+  </div>
+</div>
+```
+
+### 6. Search Bar Component
+
+**Structure:**
+```jsx
+<div className="relative">
+  <Search className="
+    absolute left-3 top-1/2
+    transform -translate-y-1/2
+    text-gray-400
+  " size={18} />
+  <input
+    type="text"
+    placeholder="Search..."
+    className="
+      pl-10 pr-4 py-2
+      border border-gray-300
+      rounded-lg
+      focus:ring-2 focus:ring-blue-500
+      focus:border-transparent
+      outline-none
+      w-full md:w-64
+    "
+  />
+</div>
+```
+
+### 7. Progress Bar Component
+
+**Structure:**
+```jsx
+<div className="space-y-2">
+  <div className="flex justify-between text-sm">
+    <span className="text-gray-600">Progress</span>
+    <span className="font-semibold text-blue-600">75%</span>
+  </div>
+  <div className="w-full bg-gray-200 rounded-full h-2">
+    <div
+      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+      style={{ width: '75%' }}
+    />
+  </div>
+</div>
+```
+
+---
+
+## Module-by-Module Specifications
+
+### MODULE 1: Dashboard
+
+**Purpose:** Central hub with statistics, quick actions, and today's schedule.
+
+**Layout Structure:**
+```jsx
+<div className="space-y-8 animate-fade-in">
+  {/* Header */}
+  <div className="flex justify-between items-center">
+    <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+    <div className="flex gap-3">
+      <Button variant="secondary" icon={Clock}>Grafik</Button>
+      <Button variant="primary" icon={Calendar}>Nowa Rezerwacja</Button>
+    </div>
+  </div>
+
+  {/* Statistics Grid - 4 cards */}
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+    <StatCard ... />
+  </div>
+
+  {/* Charts & Schedule - 2/3 and 1/3 split */}
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="lg:col-span-2">
+      {/* Chart Card */}
+    </div>
+    <div className="lg:col-span-1">
+      {/* Today's Schedule Card */}
+    </div>
+  </div>
+</div>
+```
+
+**Statistics Cards:**
+```
+1. Dzisiejsze Wizyty
+   Icon: Calendar
+   Value: Count
+   Subtext: "+X% wczoraj"
+
+2. Aktywni Klienci
+   Icon: Users
+   Value: Total count
+   Subtext: "+X w tym miesiącu"
+
+3. Przychód (Miesięczny)
+   Icon: CreditCard
+   Value: Amount in PLN
+   Subtext: "+X% poprzedni msc"
+
+4. Sprzedaż Voucherów
+   Icon: Ticket
+   Value: Count
+   Subtext: "X do wykorzystania"
+```
+
+**Chart Section (Optional Enhancement):**
+```jsx
+<Card className="h-full">
+  <div className="flex justify-between items-center mb-6">
+    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+      <TrendingUp size={20} className="text-blue-500"/>
+      Statystyki Wizyt
+    </h3>
+    <select className="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg p-2">
+      <option>Ostatnie 7 dni</option>
+      <option>Ostatnie 30 dni</option>
+    </select>
+  </div>
+
+  {/* Area Chart using recharts */}
+  <ResponsiveContainer width="100%" height={300}>
+    <AreaChart data={weeklyData}>
+      {/* Chart configuration */}
+    </AreaChart>
+  </ResponsiveContainer>
+</Card>
+```
+
+**Today's Schedule Card:**
+```jsx
+<Card className="h-full">
+  <div className="flex justify-between items-center mb-6">
+    <h3 className="text-lg font-bold text-gray-900">Dzisiejsze wizyty</h3>
+    <Button variant="ghost" size="sm">Zobacz wszystkie</Button>
+  </div>
+
+  <div className="flex flex-col gap-1">
+    {appointments.map(apt => (
+      <div className="
+        flex items-center justify-between
+        py-4 border-b border-gray-100 last:border-0
+        hover:bg-blue-50/50 px-2 rounded-lg
+        transition-colors
+      ">
+        <div className="flex items-center gap-4">
+          <div className="bg-blue-50 text-blue-700 px-3 py-2 rounded-lg font-mono font-bold text-sm">
+            {time}
+          </div>
+          <div>
+            <h4 className="font-bold text-gray-900">{clientName}</h4>
+            <p className="text-sm text-gray-500">{serviceName}</p>
+          </div>
+        </div>
+        <Badge variant={statusVariant}>{status}</Badge>
+      </div>
+    ))}
+  </div>
+
+  <div className="mt-auto pt-4 border-t border-gray-100">
+    <Button variant="ghost" className="w-full text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+      Przejdź do kalendarza <ArrowRight size={16} className="ml-2" />
+    </Button>
+  </div>
+</Card>
+```
+
+---
+
+### MODULE 2: Clients (Klienci)
+
+**Purpose:** Client database with contact information, status, and visit history.
+
+**View Modes:** Grid (default) | List (optional)
+
+**Page Header:**
+```jsx
+<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Klienci</h1>
+    <p className="text-gray-500 mt-1">Zarządzaj bazą klientów salonu</p>
+  </div>
+  <div className="flex gap-3">
+    <SearchBar placeholder="Szukaj klienta..." />
+    <Button icon={Plus}>Dodaj</Button>
+  </div>
+</div>
+```
+
+**Grid View - Client Card:**
+```jsx
+<Card className="group">
+  <div className="flex items-start justify-between mb-4">
+    <div className="flex items-center space-x-4">
+      {/* Avatar (if using images) */}
+      <img
+        src={avatarUrl}
+        alt={name}
+        className="w-14 h-14 rounded-full object-cover border-2 border-blue-100"
+      />
+      {/* OR Icon Circle */}
+      <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center">
+        <User size={24} className="text-blue-600" />
+      </div>
+
+      <div>
+        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+          {name}
+        </h3>
+        <Badge variant={status === 'ACTIVE' ? 'active' : 'neutral'}>
+          {status === 'ACTIVE' ? 'AKTYWNY' : 'NIEAKTYWNY'}
+        </Badge>
+      </div>
+    </div>
+  </div>
+
+  {/* Contact Info - semi-transparent backgrounds */}
+  <div className="space-y-3 mb-6 flex-1">
+    <div className="flex items-center text-gray-600 bg-blue-50/50 p-2 rounded-lg">
+      <Mail size={16} className="mr-3 text-blue-500" />
+      <span className="text-sm truncate">{email}</span>
+    </div>
+    <div className="flex items-center text-gray-600 bg-blue-50/50 p-2 rounded-lg">
+      <Phone size={16} className="mr-3 text-blue-500" />
+      <span className="text-sm">{phone}</span>
+    </div>
+    <div className="flex items-center text-gray-600 bg-gray-50 p-2 rounded-lg">
+      <Clock size={16} className="mr-3 text-gray-500" />
+      <span className="text-sm">
+        Ostatnia wizyta: <span className="font-medium text-gray-900">{lastVisit}</span>
+      </span>
+    </div>
+  </div>
+
+  {/* Actions */}
+  <div className="mt-auto pt-4 border-t border-gray-100 flex flex-col gap-2">
+    <Button variant="ghost" size="sm" className="w-full justify-start text-blue-600 hover:bg-blue-50" icon={History}>
+      Historia Wizyt
+    </Button>
+    <div className="flex gap-2">
+      <Button variant="secondary" size="sm" className="flex-1" icon={Edit2}>Edytuj</Button>
+      <Button variant="danger-ghost" size="sm" className="flex-1" icon={Trash2}>Usuń</Button>
+    </div>
+  </div>
+</Card>
+```
+
+**History Modal:**
+```
+Title: "Historia wizyt - {Client Name}"
+Width: max-w-4xl
+
+Content: Timeline of reservations
+  - Vertical list of visit cards
+  - Each showing: date, service, therapist, price, status
+  - Sorted by date (newest first)
+
+Empty state: Icon + "Brak wizyt w historii"
+Footer: Visit count + Close button
+```
+
+---
+
+### MODULE 3: Reservations (Rezerwacje)
+
+**Purpose:** Manage all booking appointments.
+
+**Page Header:**
+```jsx
+<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">Rezerwacje</h1>
+    <p className="text-gray-500 mt-1">Zarządzaj rezerwacjami i terminarzem</p>
+  </div>
+  <Button icon={Plus}>Nowa rezerwacja</Button>
+</div>
+```
+
+**Statistics Cards:**
+```
+1. Wszystkie Rezerwacje - Icon: ClipboardList
+2. Dzisiaj - Icon: Calendar
+3. Ten Miesiąc - Icon: TrendingUp
+4. Całkowity Przychód - Icon: DollarSign
+```
+
+**Filters:**
+```jsx
+<Card className="mb-6">
+  <div className="flex justify-between items-center flex-wrap gap-4">
+    <div className="flex gap-2">
+      {statusFilters.map(status => (
+        <button className={`
+          px-4 py-2 rounded-lg font-medium transition-all
+          ${active ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}
+        `}>
+          {status}
+        </button>
+      ))}
+    </div>
+    <div className="flex gap-2">
+      <Input type="date" />
+      <Input type="date" />
+    </div>
+  </div>
+</Card>
+```
+
+**Reservation Card:**
+```jsx
+<Card className="border-l-4 border-l-blue-500">
+  {/* Header */}
+  <div className="flex justify-between items-start mb-4">
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <Badge variant={statusVariant}>{status}</Badge>
+        <span className="text-xs text-gray-500 font-mono">#{number}</span>
+      </div>
+      <h3 className="text-lg font-bold text-gray-900">{serviceName}</h3>
+    </div>
+    <div className="text-right">
+      <p className="text-2xl font-bold text-blue-600">{price} zł</p>
+    </div>
+  </div>
+
+  {/* Info Grid */}
+  <div className="space-y-3 mb-4">
+    <div className="bg-blue-50/50 rounded-lg p-3">
+      <div className="flex items-center gap-2 mb-1">
+        <User size={16} className="text-blue-600" />
+        <p className="text-xs text-gray-600">Klient</p>
+      </div>
+      <p className="font-semibold text-blue-900">{clientName}</p>
+      <p className="text-xs text-blue-700">{clientPhone}</p>
+    </div>
+
+    <div className="grid grid-cols-2 gap-3">
+      <div className="bg-gray-50 rounded-lg p-3">
+        <div className="flex items-center gap-1 mb-1">
+          <Calendar size={14} className="text-blue-600" />
+          <p className="text-xs text-gray-600">Data</p>
+        </div>
+        <p className="font-semibold text-gray-900">{date}</p>
+      </div>
+
+      <div className="bg-gray-50 rounded-lg p-3">
+        <div className="flex items-center gap-1 mb-1">
+          <Clock size={14} className="text-blue-600" />
+          <p className="text-xs text-gray-600">Godzina</p>
+        </div>
+        <p className="font-semibold text-gray-900">{time}</p>
+      </div>
+    </div>
+  </div>
+
+  {/* Actions */}
+  <div className="pt-3 border-t border-gray-100 flex gap-2">
+    <Button variant="secondary" className="flex-1" icon={Edit2}>Edytuj</Button>
+    <Button variant="danger-ghost" icon={Trash2}>Usuń</Button>
+  </div>
+</Card>
+```
+
+---
+
+### MODULE 8: Categories (Kategorie)
+
+**Grid View - Category Card:**
+```jsx
+<Card className="group">
+  <div className="flex-1">
+    <div className="flex items-center gap-3 mb-4">
+      <div className="bg-blue-100 p-3 rounded-full">
+        <Tag size={24} className="text-blue-600" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+          {categoryName}
+        </h3>
+        {description && (
+          <p className="text-sm text-gray-600 mt-1 line-clamp-2">{description}</p>
+        )}
+      </div>
+    </div>
+
+    <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+      <div className="flex items-center gap-2">
+        <List size={16} className="text-blue-600" />
+        <span className="font-medium">{serviceCount} usług</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span className="text-gray-500">Kolejność:</span>
+        <span className="font-medium">{order}</span>
+      </div>
+    </div>
+  </div>
+
+  <div className="flex gap-2 pt-3 border-t border-gray-100 mt-auto">
+    <Button variant="secondary" className="flex-1" icon={Edit2}>Edytuj</Button>
+    <Button variant="danger-ghost" icon={Trash2}>Usuń</Button>
+  </div>
+</Card>
+```
+
+---
+
+### MODULE 10: Vouchers (Vouchery)
+
+**Voucher Card:**
+```jsx
+<Card className="group">
+  <div className="flex-1">
+    <div className="mb-4">
+      <div className="flex justify-between mb-2">
+        <Badge variant={statusVariant}>{status}</Badge>
+        <span className="px-2 py-1 bg-gray-200 rounded text-xs font-semibold uppercase">
+          {type}
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Ticket size={20} className="text-blue-600" />
+        <code className="font-mono text-lg font-bold text-blue-900">{code}</code>
+      </div>
+    </div>
+
+    {/* Value with Progress */}
+    <div className="bg-blue-50 rounded-lg p-3 border border-blue-200 mb-3">
+      <p className="text-xs text-gray-600 mb-1">Wartość</p>
+      <div className="flex items-center justify-between">
+        <span className="text-2xl font-bold text-blue-600">{currentValue} zł</span>
+        <span className="text-sm text-gray-500">/ {originalValue} zł</span>
+      </div>
+      <ProgressBar value={currentValue} max={originalValue} className="mt-2" />
+    </div>
+
+    {/* Buyer/Recipient Info */}
+    <div className="bg-blue-50/50 rounded-lg p-3 mb-3">
+      <div className="flex items-center gap-2 mb-2">
+        <User size={16} className="text-blue-500" />
+        <p className="text-xs text-gray-600">Kupujący</p>
+      </div>
+      <p className="font-semibold text-gray-900">{buyerName}</p>
+      <p className="text-xs text-gray-500 truncate">{buyerEmail}</p>
+    </div>
+  </div>
+
+  <div className="pt-3 border-t border-gray-100 mt-auto">
+    <Button variant="ghost" size="sm" className="w-full justify-start text-blue-600 hover:bg-blue-50" icon={Eye}>
+      Zobacz szczegóły
+    </Button>
+  </div>
+</Card>
+```
+
+---
+
+## Responsive Behavior
+
+### Mobile (<768px)
+
+```
+- Sidebar: Drawer overlay with backdrop
+- Grid: 1 column
+- Statistics: 1 column
+- Header: Stacked layout
+- Padding: p-4 instead of p-8
+- Mobile header visible with hamburger menu
+```
+
+### Tablet (768px - 1024px)
+
+```
+- Sidebar: May collapse to icons only OR full width
+- Grid: 2 columns for cards
+- Statistics: 2 columns
+- Header: Horizontal flex maintained
+```
+
+### Desktop (>1024px)
+
+```
+- Sidebar: Always visible, 256px
+- Grid: 3 columns for entity cards
+- Statistics: 4 columns
+- Max content width: 1280px (7xl)
+```
+
+---
+
+## Accessibility
+
+- **WCAG AA** color contrast minimum
+- **Keyboard navigation** for all interactive elements
+- **Focus indicators** (ring-2 ring-blue-500)
+- **ARIA labels** for icon-only buttons
+- **Semantic HTML** structure
+- **Screen reader** friendly
+
+---
+
+## Design Philosophy
+
+**Calm & Professional:**
+- Soft blues evoking water and relaxation
+- Generous white space
+- Subtle gradients and shadows
+
+**Efficient & Functional:**
+- Clear visual hierarchy
+- Logical grouping (sidebar sections)
+- Quick access patterns
+- Minimal clicks to complete tasks
+
+**Modern & Polished:**
+- Smooth animations (fade-in, transitions)
+- Group hover effects
+- Semi-transparent backgrounds
+- Contemporary spacing
+
+**Consistent & Predictable:**
+- Reusable component patterns
+- Standard button placements (mt-auto)
+- Familiar conventions
+- Uppercase tracking for labels
+
+---
+
+This comprehensive specification provides a complete blueprint for the Lotos SPA management system with modern UI/UX patterns, suitable for implementation or AI-assisted design generation.

@@ -1,0 +1,12 @@
+export { LoginPage } from './LoginPage';
+export { DashboardPage } from './DashboardPage';
+export { KlienciPage } from './KlienciPage';
+export { RezerwacjePage } from './RezerwacjePage';
+export { UstawieniaPage } from './UstawieniaPage';
+export { UslugiPage } from './UslugiPage';
+export { PakietyPage } from './PakietyPage';
+export { VoucheryPage } from './VoucheryPage';
+export { HarmonogramPage } from './HarmonogramPage';
+export { GrafikPage } from './GrafikPage';
+export { RaportyPage } from './RaportyPage';
+export { SMSPage } from './SMSPage';
