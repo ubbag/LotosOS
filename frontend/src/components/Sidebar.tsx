@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import {
   Users,
-  Calendar,
   Package,
   Ticket,
   Settings,

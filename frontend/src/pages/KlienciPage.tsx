@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, Mail, Phone, Clock, Edit2, Trash2, History } from 'lucide-react';
+import { Search, Plus, Mail, Phone, Clock, Edit2, Trash2 } from 'lucide-react';
 import { Layout } from '@components/Layout';
 import { Card } from '@components/Card';
 import { Button } from '@components/Button';

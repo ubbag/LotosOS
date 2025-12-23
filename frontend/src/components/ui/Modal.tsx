@@ -55,7 +55,7 @@ export const Modal: React.FC<ModalProps> = ({
       >
         <div className="flex items-center justify-between p-4 border-b border-background-dark">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
