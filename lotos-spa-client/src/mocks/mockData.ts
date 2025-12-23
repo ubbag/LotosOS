@@ -3,13 +3,14 @@
  * Remove or disable this when connecting to real API
  */
 
-import { User, Client, AuthResponse, PaginatedResponse } from '../types';
+import type { User, Client, AuthResponse, PaginatedResponse } from '../types';
+import { UserRole } from '../types';
 
 export const mockUser: User = {
   id: '1',
   email: 'admin@lotosspa.pl',
   imie: 'Admin',
-  rola: 'WLASCICIEL',
+  rola: UserRole.WLASCICIEL,
   aktywny: true,
   ostatnieLogowanie: new Date().toISOString(),
   createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),

@@ -55,7 +55,7 @@ export const createMockInterceptor = (axiosInstance: any) => {
         }
 
         // For other endpoints, return error
-        const mockError: AxiosError = {
+        const mockError = {
           config,
           code: 'ERR_NETWORK',
           message: 'Backend unavailable. Using mock data for login and clients only.',
@@ -73,7 +73,8 @@ export const createMockInterceptor = (axiosInstance: any) => {
             config,
           } as any,
           isAxiosError: true,
-        };
+          toJSON: () => ({}),
+        } as AxiosError;
         throw mockError;
       }
 
