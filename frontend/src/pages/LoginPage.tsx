@@ -72,9 +72,11 @@ export const LoginPage: React.FC = () => {
         </form>
 
         <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-600">
-          <p className="font-medium mb-2">Demo dostęp:</p>
-          <p>Email: admin@lotosspa.pl</p>
-          <p>Hasło: haslo123</p>
+          <p className="font-medium mb-2">🎭 Tryb Demo:</p>
+          <p>Dowolny email i hasło zaloguje Cię do trybu demo z przykładowymi danymi.</p>
+          <p className="mt-2 text-xs text-gray-500">
+            Aby używać prawdziwych danych, podłącz backend API.
+          </p>
         </div>
       </Card>
     </div>

@@ -33,3 +33,5 @@ temp/
 
 # Windows special files
 nul
+
+.vercel

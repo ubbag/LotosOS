@@ -41,6 +41,11 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </button>
         </div>
 
+        {/* Demo Mode Banner */}
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 text-center text-sm">
+          🎭 <strong>Tryb Demo</strong> - Używasz przykładowych danych. Podłącz backend API dla pełnej funkcjonalności.
+        </div>
+
         {/* Content Area */}
         <main className="flex-1 w-full p-4 md:p-8 overflow-auto">{children}</main>
       </div>

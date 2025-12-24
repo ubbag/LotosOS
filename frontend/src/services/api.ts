@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { ApiResponse } from '@types';
+import { setupMockInterceptor } from './mockInterceptor';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -9,6 +10,9 @@ export const apiClient: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Setup mock interceptor for demo mode
+setupMockInterceptor(apiClient);
 
 // Request interceptor - add token
 apiClient.interceptors.request.use(
