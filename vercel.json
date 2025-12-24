@@ -4,18 +4,8 @@
   "installCommand": "cd frontend && npm install",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!assets|.*\\.).*)",
       "destination": "/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
     }
   ]
 }
